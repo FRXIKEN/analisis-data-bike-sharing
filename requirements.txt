@@ -1,0 +1,4 @@
+# Dependensi dashboard (dipakai juga oleh Streamlit Community Cloud)
+pandas>=2.0,<4
+streamlit>=1.32,<2
+plotly>=5.18,<7
