@@ -19,6 +19,17 @@ SEASON_LABELS = {1: "Musim Dingin", 2: "Musim Semi", 3: "Musim Panas", 4: "Musim
 WEATHER_LABELS = {1: "Cerah / sedikit awan", 2: "Berawan / berkabut", 3: "Hujan ringan / salju ringan"}
 DAY_TYPE_LABELS = {1: "Hari kerja", 0: "Akhir pekan/libur"}
 DAY_COLORS = {"Hari kerja": "#2563EB", "Akhir pekan/libur": "#F59E0B"}
+COLOR_HIGH, COLOR_LOW, COLOR_MID = "#0F766E", "#DC2626", "#94A3B8"  # sama dengan notebook
+
+
+def bar_colors(values):
+    """Warna batang: tertinggi hijau tosca, terendah merah, lainnya abu-abu (satu batang: hijau tosca)."""
+    values = list(values)
+    if len(values) == 1:
+        return [COLOR_HIGH]
+    top, bottom = max(values), min(values)
+    return [COLOR_HIGH if v == top else COLOR_LOW if v == bottom else COLOR_MID for v in values]
+
 
 
 def show(fig):
@@ -83,14 +94,14 @@ with left:
     by_season = filtered.groupby(["season", "season_label"], as_index=False).cnt.mean().sort_values("season")
     fig = px.bar(by_season, x="season_label", y="cnt", text_auto=",.0f",
                  labels={"season_label":"Musim","cnt":"Rata-rata sewa/hari"})
-    fig.update_traces(marker_color="#0F766E")
+    fig.update_traces(marker_color=bar_colors(by_season["cnt"]))
     show(fig)
 with right:
     st.subheader("Rata-rata menurut cuaca")
     by_weather = filtered.groupby(["weathersit", "weather_label"], as_index=False).cnt.mean().sort_values("weathersit")
     fig = px.bar(by_weather, x="weather_label", y="cnt", text_auto=",.0f",
                  labels={"weather_label":"Cuaca","cnt":"Rata-rata sewa/hari"})
-    fig.update_traces(marker_color="#0F766E")
+    fig.update_traces(marker_color=bar_colors(by_weather["cnt"]))
     fig.update_layout(xaxis_tickangle=-20)
     show(fig)
 
